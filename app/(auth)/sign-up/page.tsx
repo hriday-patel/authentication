@@ -1,11 +1,11 @@
 import Form from "next/form";
 import Link from "next/link";
-
+import { signUp } from "@/app/utils/actions";
 const page = () => {
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 rounded-xl border border-neutral-400/25 shadow-lg bg-black/25">
       <h1 className="mb-10 font-bold tracking-tight text-2xl">Sign Up</h1>
-      <Form action={""} className="flex flex-col gap-5">
+      <Form action={signUp} className="flex flex-col gap-5">
         <div className="flex flex-col justify-center items-start p-3 gap-2 bg-neutral-900 rounded-md">
           <label htmlFor="name">Name</label>
           <input
