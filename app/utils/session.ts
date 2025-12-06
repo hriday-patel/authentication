@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Role } from "../generated/prisma/enums";
 import crypto from "crypto";
 import { client } from "./redis";
+import { cookies } from "next/headers";
 
 const sessionSchema = z.object({
   id: z.number(),
@@ -54,11 +55,24 @@ function setCookies(sessionId: string, cookies: Pick<Cookies, "set">) {
   });
 }
 
-function getUserBySessionId() {}
+export async function getUserBySessionId() {
+  const cooky = await cookies();
+  return await getUserSessionId(cooky);
+ }
 
-function getUserSessionId(cookies: Pick<Cookies, "get">) {
+async function getUserSessionId(cookies: Pick<Cookies, "get">) {
     const userSession = cookies.get("session-id")?.value;
     if(!userSession) return null;
+    return await getCurrentUserInfo(userSession);
 }
 
-function
+
+async function getCurrentUserInfo(userSession: string) {
+    const userDetails = await client.get(`session:${userSession}`);
+    const {success, data: user} = sessionSchema.safeParse(userDetails);
+    if(!success) return null;
+    return user;
+}
+
+
+

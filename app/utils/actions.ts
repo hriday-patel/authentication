@@ -30,7 +30,8 @@ export async function signUp(formData: FormData) {
     password,
   });
 
-  if (parseResult.success) {
+  if (!parseResult.success) return null;
+  try{
     const user = await getEmail(email);
     if (user != null) return;
     const salt = generateSalt();
@@ -40,8 +41,12 @@ export async function signUp(formData: FormData) {
     const sesObj = {id: newUser.id, role: newUser.role};
     const cooky = await cookies();
     await createSession(sesObj, cooky);
-    redirect('/');
   }
+  catch(err){
+    console.log(err);
+    return null;
+  }
+  redirect("/");
 }
 
 export async function signIn(formData: FormData) {
